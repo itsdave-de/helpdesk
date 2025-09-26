@@ -9,7 +9,7 @@
     <UserMenu class="mb-2" :options="profileSettings" />
     <SidebarLink
       v-if="!isCustomerPortal"
-      label="Search"
+      :label="__('Search')"
       class="my-0.5"
       :icon="LucideSearch"
       :on-click="() => openCommandPalette()"
@@ -25,7 +25,7 @@
     <SidebarLink
       v-if="!isCustomerPortal"
       class="relative my-0.5 min-h-7"
-      label="Dashboard"
+      :label="__('Dashboard')"
       :icon="LucideLayoutDashboard"
       :to="'Dashboard'"
       :is-active="isActiveTab('Dashboard')"
@@ -40,7 +40,7 @@
       />
       <SidebarLink
         class="relative my-0.5"
-        label="Notifications"
+        :label="__('Notifications')"
         :icon="LucideBell"
         :on-click="() => notificationStore.toggle()"
         :is-expanded="isExpanded"
@@ -117,7 +117,7 @@
       <SidebarLink
         v-if="isOnboardingStepsCompleted && !isCustomerPortal"
         :icon="HelpIcon"
-        :label="'Help'"
+        :label="__('Help')"
         :is-expanded="isExpanded"
         @click="
           () => {
@@ -131,7 +131,7 @@
         :icon="isExpanded ? LucideArrowLeftFromLine : LucideArrowRightFromLine"
         :is-active="false"
         :is-expanded="isExpanded"
-        :label="isExpanded ? 'Collapse' : 'Expand'"
+        :label="isExpanded ? __('Collapse') : __('Expand')"
         :on-click="() => (isExpanded = !isExpanded)"
       />
     </div>
@@ -181,6 +181,7 @@ import { useAuthStore } from "@/stores/auth";
 import { useNotificationStore } from "@/stores/notification";
 import { useSidebarStore } from "@/stores/sidebar";
 import { capture } from "@/telemetry";
+import { __ } from "@/translation";
 import { isCustomerPortal } from "@/utils";
 import { call } from "frappe-ui";
 import {
