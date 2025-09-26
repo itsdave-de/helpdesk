@@ -2838,3 +2838,23 @@ msgstr "Einklappen"
 msgid "Expand"
 msgstr "Ausklappen"
 
+#: desk/src/components/layouts/layoutSettings.ts
+msgid "Tickets"
+msgstr "Tickets"
+
+#: desk/src/components/layouts/layoutSettings.ts
+msgid "Knowledge Base"
+msgstr "Wissensdatenbank"
+
+#: desk/src/components/layouts/layoutSettings.ts
+msgid "Canned responses"
+msgstr "Vorgefertigte Antworten"
+
+#: desk/src/components/layouts/layoutSettings.ts
+msgid "Contacts"
+msgstr "Kontakte"
+
+#: desk/src/components/layouts/layoutSettings.ts
+msgid "Call Logs"
+msgstr "Anruflisten"
+
