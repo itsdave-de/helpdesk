@@ -68,27 +68,52 @@
               {{ item.label }}
             </div>
 
-            <div
-              v-else
-              class="grid grid-cols-[180px_1fr_auto] gap-3 items-center py-1.5"
-            >
-              <FormControl
-                type="select"
-                :options="statusOptions"
-                :modelValue="item.status || 'Offen'"
-                @update:modelValue="(v) => changeStatus(cl, item, v as string)"
-                size="sm"
-              />
-              <div :class="labelClass(item)">{{ item.label }}</div>
-              <div
-                v-if="item.completed_by"
-                class="text-xs text-ink-gray-5 whitespace-nowrap"
-              >
-                {{ item.completed_by }}
-                <span class="text-ink-gray-4">·</span>
-                {{ formatDate(item.completed_at) }}
+            <div v-else class="py-1.5">
+              <div class="grid grid-cols-[180px_1fr_auto] gap-3 items-center">
+                <FormControl
+                  type="select"
+                  :options="statusOptions"
+                  :modelValue="item.status || 'Offen'"
+                  @update:modelValue="(v) => changeStatus(cl, item, v as string)"
+                  size="sm"
+                />
+                <div class="flex items-center gap-1.5" :class="labelClass(item)">
+                  <span>{{ item.label }}</span>
+                  <button
+                    type="button"
+                    @click="toggleNote(item)"
+                    class="text-ink-gray-5 hover:text-ink-gray-8"
+                    :title="item.note ? 'Notiz bearbeiten' : 'Notiz hinzufügen'"
+                  >
+                    <MessageSquare v-if="item.note" class="w-3.5 h-3.5 text-ink-gray-7" />
+                    <MessageSquarePlus v-else class="w-3.5 h-3.5" />
+                  </button>
+                </div>
+                <div
+                  v-if="item.completed_by"
+                  class="text-xs text-ink-gray-5 whitespace-nowrap"
+                >
+                  {{ item.completed_by }}
+                  <span class="text-ink-gray-4">·</span>
+                  {{ formatDate(item.completed_at) }}
+                </div>
+                <div v-else />
               </div>
-              <div v-else />
+              <div
+                v-if="expandedNotes.has(item.name) || item.note"
+                class="ml-[192px] mt-1.5"
+              >
+                <textarea
+                  :value="noteDraft[item.name] ?? item.note ?? ''"
+                  @input="(e) => (noteDraft[item.name] = (e.target as HTMLTextAreaElement).value)"
+                  @blur="saveNote(cl, item)"
+                  @keydown.meta.enter="saveNote(cl, item)"
+                  @keydown.ctrl.enter="saveNote(cl, item)"
+                  rows="2"
+                  class="w-full text-sm px-2 py-1 border border-outline-gray-2 rounded bg-surface-white resize-y"
+                  placeholder="Notiz…"
+                />
+              </div>
             </div>
           </template>
         </div>
@@ -157,8 +182,10 @@ import {
   createResource,
   toast,
 } from "frappe-ui";
-import { computed, ref } from "vue";
+import { computed, reactive, ref } from "vue";
 import { useRoute } from "vue-router";
+import MessageSquare from "~icons/lucide/message-square";
+import MessageSquarePlus from "~icons/lucide/message-square-plus";
 import Plus from "~icons/lucide/plus";
 import Trash2 from "~icons/lucide/trash-2";
 
@@ -245,6 +272,36 @@ async function changeStatus(
     resource.reload();
   } catch (e: any) {
     toast.error(e.messages?.join("\n") || "Statusänderung fehlgeschlagen");
+  }
+}
+
+const expandedNotes = reactive(new Set<string>());
+const noteDraft = reactive<Record<string, string>>({});
+
+function toggleNote(item: ChecklistItem) {
+  if (expandedNotes.has(item.name)) expandedNotes.delete(item.name);
+  else expandedNotes.add(item.name);
+}
+
+async function saveNote(cl: Checklist, item: ChecklistItem) {
+  const draft = noteDraft[item.name];
+  if (draft === undefined) return;
+  if ((draft || "") === (item.note || "")) {
+    delete noteDraft[item.name];
+    if (!draft) expandedNotes.delete(item.name);
+    return;
+  }
+  try {
+    await call("helpdesk_addon.api.checklist_actions.set_item_note", {
+      checklist: cl.name,
+      item_name: item.name,
+      note: draft,
+    });
+    delete noteDraft[item.name];
+    if (!draft) expandedNotes.delete(item.name);
+    resource.reload();
+  } catch (e: any) {
+    toast.error(e.messages?.join("\n") || "Notiz konnte nicht gespeichert werden");
   }
 }
 
