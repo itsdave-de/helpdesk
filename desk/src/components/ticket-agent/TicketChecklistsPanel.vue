@@ -157,12 +157,13 @@ import {
   createResource,
   toast,
 } from "frappe-ui";
-import { computed, inject, ref } from "vue";
-import { TicketSymbol } from "@/types";
+import { computed, ref } from "vue";
+import { useRoute } from "vue-router";
 import Plus from "~icons/lucide/plus";
 import Trash2 from "~icons/lucide/trash-2";
 
-const ticket = inject(TicketSymbol);
+const route = useRoute();
+const ticketId = computed(() => route.params.ticketId as string);
 
 const statusOptions = [
   { label: "☐ Offen", value: "Offen" },
@@ -192,7 +193,7 @@ type Checklist = {
 
 const resource = createResource({
   url: "helpdesk_addon.api.checklist_actions.get_for_ticket",
-  makeParams: () => ({ ticket: ticket.value.doc?.name }),
+  params: { ticket: ticketId.value },
   auto: true,
 });
 
@@ -257,7 +258,7 @@ async function attach() {
   if (!selectedTemplate.value) return;
   try {
     await call("helpdesk_addon.api.checklist_actions.attach_template", {
-      ticket: ticket.value.doc.name,
+      ticket: ticketId.value,
       template: selectedTemplate.value,
     });
     showAttachDialog.value = false;
