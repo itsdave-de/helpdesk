@@ -192,9 +192,8 @@ type Checklist = {
 
 const resource = createResource({
   url: "helpdesk_addon.api.checklist_actions.get_for_ticket",
-  params: { ticket: ticket.value.doc?.name },
+  makeParams: () => ({ ticket: ticket.value.doc?.name }),
   auto: true,
-  cache: ["HDA Checklist", ticket.value.doc?.name],
 });
 
 const checklists = computed<Checklist[]>(() => resource.data || []);
