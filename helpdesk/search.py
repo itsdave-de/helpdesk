@@ -365,7 +365,8 @@ def search(
             query += f"{sep}{part}*"
 
     query = query.lstrip(sep)  # Remove leading separator (| at beginning is invalid)
-    result = search.search(query, start=0, highlight=True)
+    page_len = 500 if only_articles else NUM_RESULTS
+    result = search.search(query, start=0, page_length=page_len, highlight=True)
     groups = {}
     for r in result.docs:
         doctype, name = r.id.split(":")
