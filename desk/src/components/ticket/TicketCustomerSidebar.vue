@@ -210,10 +210,16 @@ const ticketAdditionalInfo = computed(() => {
         !field.hide_from_customer &&
         ["subject", "team", "priority"].indexOf(field.fieldname) === -1
     )
-    .map((field: Field) => ({
+    .map((field: Field) => {
+      let value = ticket.data[field.fieldname];
+      if (field.fieldtype === "Check") {
+        value = value ? "Yes" : "No";
+      }
+      return {
       label: field.label,
-      value: ticket.data[field.fieldname],
-    }));
+      value,
+      };
+    });
 
   return [...fields, ...custom_fields];
 });

@@ -8,22 +8,13 @@
         <div class="absolute right-0 pr-2">
           <Dropdown :options="dropdownOptions">
             <template #default="{ open }">
-              <Button :label="ticket.data.status">
-                <template #prefix>
-                  <IndicatorIcon
-                    :class="
-                      ticketStatusStore.getStatus(ticket.data.status)
-                        ?.parsed_color
-                    "
-                  />
-                </template>
-                <template #suffix>
-                  <FeatherIcon
-                    :name="open ? 'chevron-up' : 'chevron-down'"
-                    class="h-4"
-                  />
-                </template>
-              </Button>
+              <Badge
+                :label="ticket.data.status"
+                :theme="ticketStatusStore.getStatus(ticket.data.status)?.badge_theme || 'gray'"
+                variant="subtle"
+                size="lg"
+                class="cursor-pointer"
+              />
             </template>
           </Dropdown>
         </div>
@@ -194,6 +185,7 @@
 
 <script setup lang="ts">
 import {
+  Badge,
   Breadcrumbs,
   Dialog,
   Dropdown,
@@ -226,7 +218,6 @@ import {
   CommentIcon,
   DetailsIcon,
   EmailIcon,
-  IndicatorIcon,
   PhoneIcon,
 } from "@/components/icons";
 import { TicketAgentActivities } from "@/components/ticket";
@@ -339,10 +330,7 @@ const dropdownOptions = computed(() =>
     label: o.label_agent,
     value: o.label_agent,
     onClick: () => updateTicket("status", o.label_agent),
-    icon: () =>
-      h(IndicatorIcon, {
-        class: o.parsed_color,
-      }),
+    
   }))
 );
 

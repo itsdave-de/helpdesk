@@ -48,15 +48,14 @@
         <!-- Status -->
         <Dropdown :options="statusDropdown" placement="right">
           <template #default="{ open }">
-            <Button :label="ticket.doc.status" ref="statusRef">
-              <template #prefix>
-                <IndicatorIcon
-                  :class="
-                    ticketStatusStore.getStatus(ticket.doc.status)?.parsed_color
-                  "
-                />
-              </template>
-            </Button>
+            <button ref="statusRef" class="focus:outline-none">
+              <Badge
+                :label="ticket.doc.status"
+                :theme="ticketStatusStore.getStatus(ticket.doc.status)?.badge_theme || 'gray'"
+                variant="subtle"
+                size="lg"
+              />
+            </button>
           </template>
         </Dropdown>
         <!-- Core Actions + Custom Actions -->
@@ -97,7 +96,7 @@ import {
 } from "@/types";
 import { HDTicketStatus } from "@/types/doctypes";
 import { getIcon } from "@/utils";
-import { Breadcrumbs, call, Dropdown, toast } from "frappe-ui";
+import { Badge, Breadcrumbs, call, Dropdown, toast } from "frappe-ui";
 import { __ } from "@/translation";
 import {
   computed,
@@ -112,7 +111,6 @@ import {
 } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import LucideMerge from "~icons/lucide/merge";
-import { IndicatorIcon } from "../icons";
 import TicketNavigation from "./TicketNavigation.vue";
 import TicketSLA from "./TicketSLA.vue";
 import TicketSubjectModal from "./TicketSubjectModal.vue";
@@ -154,10 +152,7 @@ const statusDropdown = computed(() => {
         }
       );
     },
-    icon: () =>
-      h(IndicatorIcon, {
-        class: o.parsed_color,
-      }),
+    
   }));
 });
 const breadcrumbs = computed(() => {
@@ -278,7 +273,7 @@ const statusRef = useTemplateRef("statusRef");
 
 onMounted(() => {
   useShortcut("s", () => {
-    statusRef.value?.$el?.nextElementSibling?.click();
+    statusRef.value?.nextElementSibling?.click();
   });
 });
 </script>
