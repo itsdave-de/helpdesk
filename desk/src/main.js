@@ -76,6 +76,34 @@ for (const c in globalComponents) {
 
 app.config.globalProperties.$dialog = createDialog;
 
+// Load helpdesk addon questionnaire scripts
+(function loadQuestionnaireAddon() {
+  console.log('🔌 Loading Helpdesk Addon Questionnaire...');
+
+  function loadScript(src, callback) {
+    const script = document.createElement('script');
+    script.src = src;
+    script.onload = () => {
+      console.log('✅ Loaded:', src);
+      if (callback) callback();
+    };
+    script.onerror = () => console.error('❌ Failed to load:', src);
+    document.head.appendChild(script);
+  }
+
+  function loadCSS(href) {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = href;
+    document.head.appendChild(link);
+  }
+
+  loadCSS('/assets/helpdesk_addon/dist/questionnaire.css');
+  loadScript('/assets/helpdesk_addon/dist/questionnaire.iife.js', () => {
+    loadScript('/assets/helpdesk_addon/js/questionnaire_integration.js');
+  });
+})();
+
 let socket;
 if (import.meta.env.DEV) {
   frappeRequest({
