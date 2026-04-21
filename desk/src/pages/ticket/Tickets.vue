@@ -58,7 +58,7 @@
 import { LayoutHeader, ListViewBuilder } from "@/components";
 import {
   EditIcon,
-  IndicatorIcon,
+
   PinIcon,
   TicketIcon,
   UnpinIcon,
@@ -120,14 +120,11 @@ const options = {
         const label = isCustomerPortal.value
           ? status?.["label_customer"]
           : status?.["label_agent"];
-        return h(
-          "div",
-          { class: "flex items-center space-x-2 justify-start w-full" },
-          [
-            h(IndicatorIcon, { class: status?.["parsed_color"] }),
-            h("span", { class: "truncate flex-1" }, label),
-          ]
-        );
+        return h(Badge, {
+          label: label,
+          theme: status?.["badge_theme"] || "gray",
+          variant: "subtle",
+        });
       },
     },
     agreement_status: {
