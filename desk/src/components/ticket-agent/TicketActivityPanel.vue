@@ -6,8 +6,9 @@
     class="[&_[role='tab']]:px-0 [&_[role='tablist']]:px-5 [&_[role='tablist']]:gap-7.5"
   >
     <template #tab-panel="{ tab }">
+      <TicketChecklistsPanel v-if="tab.name === 'checklist'" />
       <TicketAgentActivities
-        v-if="Boolean(activities.data)"
+        v-else-if="Boolean(activities.data)"
         ref="ticketAgentActivitiesRef"
         :activities="filterActivities(tab.name as TicketTab)"
         :title="tab.label"
@@ -52,10 +53,12 @@
 <script setup lang="ts">
 import {
   ActivityIcon,
+  CheckCircleIcon,
   CommentIcon,
   EmailIcon,
   PhoneIcon,
 } from "@/components/icons";
+import TicketChecklistsPanel from "@/components/ticket-agent/TicketChecklistsPanel.vue";
 import { useActiveTabManager } from "@/composables/useActiveTabManager";
 import { useTelephonyStore } from "@/stores/telephony";
 import {
@@ -98,6 +101,11 @@ const tabs: ComputedRef<TabObject[]> = computed(() => {
       name: "comment",
       label: "Comments",
       icon: CommentIcon,
+    },
+    {
+      name: "checklist",
+      label: "Checklisten",
+      icon: CheckCircleIcon,
     },
   ];
 

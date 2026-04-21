@@ -1,6 +1,7 @@
 export { default as ActivityIcon } from "./ActivityIcon.vue";
 export { default as AscendingIcon } from "./AscendingIcon.vue";
 export { default as AttachmentIcon } from "./AttachmentIcon.vue";
+export { default as CheckCircleIcon } from "./CheckCircleIcon.vue";
 export { default as ColumnsIcon } from "./ColumnsIcon.vue";
 export { default as CommentIcon } from "./CommentIcon.vue";
 export { default as CopyIcon } from "./CopyIcon.vue";
