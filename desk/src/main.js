@@ -101,11 +101,12 @@ app.config.globalProperties.$dialog = createDialog;
   // Bei Aenderungen an questionnaire_integration.js / questionnaire.iife.js
   // diesen Wert bumpen, damit der Browser nicht die alte Version aus dem
   // HTTP-Cache liefert (statische Dateien werden ohne Hash ausgeliefert).
-  const v = '?v=20260528b';
+  const v = '?v=20260528c';
   loadCSS('/assets/helpdesk_addon/dist/questionnaire.css' + v);
   loadScript('/assets/helpdesk_addon/dist/questionnaire.iife.js' + v, () => {
     loadScript('/assets/helpdesk_addon/js/questionnaire_integration.js' + v);
   });
+  loadScript('/assets/helpdesk_addon/js/close_with_comment.js' + v);
 })();
 
 let socket;
