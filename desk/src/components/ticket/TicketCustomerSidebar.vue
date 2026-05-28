@@ -258,6 +258,9 @@ const ticketAdditionalInfo = computed(() => {
           `${window.date_format.toUpperCase()} ${window.time_format}`
         );
       }
+      if (field.fieldtype === "Check") {
+        option.value = option.value ? "Yes" : "No";
+      }
       return option;
     });
 
