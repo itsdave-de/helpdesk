@@ -11,6 +11,7 @@
   "customer_name",
   "domain",
   "erpnext_customer",
+  "email",
   "references_tab",
   "contact_html"
  ],
@@ -49,12 +50,17 @@
    "hidden": 1,
    "label": "ERPNext Customer",
    "read_only": 1
+  },
+  {
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "label": "E-Mail"
   }
  ],
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-05-16 19:18:37.792462",
+ "modified": "2026-05-28 15:40:28.350177",
  "modified_by": "Administrator",
  "module": "Helpdesk",
  "name": "HD Customer",
