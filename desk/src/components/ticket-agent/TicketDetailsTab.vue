@@ -41,7 +41,7 @@
     <!-- Scrollable sections: Ticket Info + Recent / Similar Tickets -->
     <div
       class="border-t flex-1 min-h-0 overflow-y-auto divide-y-[1px]"
-      v-if="Boolean(customFields.length) || showRecentSimilarTickets"
+      v-if="Boolean(customFields.length) || showRecentSimilarTickets || Boolean(ldapEnabled.data)"
     >
       <!-- Ticket Info (custom fields) -->
       <div v-if="Boolean(customFields.length)">
@@ -75,6 +75,44 @@
                 "
               />
             </template>
+          </div>
+        </Section>
+      </div>
+
+      <!-- Ersteller (AD/LDAP) — lazy: laedt beim Ausklappen; nur wenn HDA Settings aktiv -->
+      <div v-if="ldapEnabled.data">
+        <Section label="Ersteller (AD)" :opened="false">
+          <template #header="{ opened, toggle }">
+            <div
+              class="flex gap-2.5 items-center justify-between sticky top-0 bg-surface-white z-10 px-4 py-4 cursor-pointer"
+              @click="onLdapHeaderClick(opened, toggle)"
+            >
+              <span class="text-ink-gray-8 font-semibold text-base select-none">
+                {{ __("Ersteller (AD)") }}
+              </span>
+              <LucideChevronRight
+                class="size-4 text-ink-gray-6"
+                :class="{ 'rotate-90': opened }"
+              />
+            </div>
+          </template>
+          <div class="space-y-1.5 px-4 mb-3 mt-0.5">
+            <div v-if="ldapInfo.loading" class="text-sm text-ink-gray-5">
+              {{ __("Lädt…") }}
+            </div>
+            <template v-else-if="ldapRows.length">
+              <div
+                v-for="row in ldapRows"
+                :key="row.label"
+                class="flex items-start text-base leading-5"
+              >
+                <span class="w-[110px] shrink-0 text-sm text-ink-gray-5">{{ row.label }}</span>
+                <span class="flex-1 text-base text-ink-gray-8 break-words">{{ row.value }}</span>
+              </div>
+            </template>
+            <div v-else class="text-sm text-ink-gray-5">
+              {{ __("Keine AD-Daten") }}
+            </div>
           </div>
         </Section>
       </div>
@@ -155,8 +193,8 @@ import {
   TicketSymbol,
 } from "@/types";
 import dayjs from "dayjs";
-import { Tooltip } from "frappe-ui";
-import { computed, inject, ref } from "vue";
+import { Tooltip, createResource } from "frappe-ui";
+import { computed, inject, ref, watch } from "vue";
 import LucideChevronRight from "~icons/lucide/chevron-right";
 import Section from "../Section.vue";
 import TicketField from "../TicketField.vue";
@@ -168,6 +206,41 @@ const assignees = inject(AssigneeSymbol)!;
 const customizations = inject(CustomizationSymbol)!;
 const activities = inject(ActivitiesSymbol)!;
 const recentSimilarTickets = inject(RecentSimilarTicketsSymbol)!;
+
+const ldapInfo = createResource({
+  url: "helpdesk_addon.api.ldap_info.get_creator_ldap_info",
+  makeParams() {
+    return { ticket: ticket.value?.name };
+  },
+});
+const ldapEnabled = createResource({
+  url: "helpdesk_addon.api.ldap_info.creator_card_enabled",
+  auto: true,
+});
+const ldapLoadedFor = ref<string | null>(null);
+function loadLdapIfNeeded() {
+  const name = ticket.value?.name;
+  if (!name || ldapLoadedFor.value === name) return;
+  ldapLoadedFor.value = name;
+  ldapInfo.reload();
+}
+function onLdapHeaderClick(opened: boolean, toggle: () => void) {
+  if (!opened) loadLdapIfNeeded();
+  toggle();
+}
+// Lazy: bei Ticketwechsel nur zuruecksetzen, NICHT automatisch laden
+watch(
+  () => ticket.value?.name,
+  () => {
+    ldapLoadedFor.value = null;
+    ldapInfo.reset?.();
+  }
+);
+const ldapRows = computed(() =>
+  ldapLoadedFor.value === ticket.value?.name
+    ? ((ldapInfo.data as { label: string; value: string }[]) || [])
+    : []
+);
 const { getFields, getField } = getMeta("HD Ticket");
 const { notifyTicketUpdate } = useNotifyTicketUpdate(ticket.value?.name);
 
