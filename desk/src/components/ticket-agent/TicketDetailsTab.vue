@@ -81,7 +81,7 @@
 
       <!-- Ersteller (AD/LDAP) — lazy: laedt beim Ausklappen; nur wenn HDA Settings aktiv -->
       <div v-if="ldapEnabled.data">
-        <Section label="Ersteller (AD)" :opened="false">
+        <Section label="Ersteller (AD)" :opened="true">
           <template #header="{ opened, toggle }">
             <div
               class="flex gap-2.5 items-center justify-between sticky top-0 bg-surface-white z-10 px-4 py-4 cursor-pointer"
@@ -228,12 +228,21 @@ function onLdapHeaderClick(opened: boolean, toggle: () => void) {
   if (!opened) loadLdapIfNeeded();
   toggle();
 }
-// Lazy: bei Ticketwechsel nur zuruecksetzen, NICHT automatisch laden
+// Default aufgeklappt: bei Ticketwechsel zuruecksetzen und (wenn aktiv) direkt laden.
+// Pro-Ticket on-demand (kein Vorab-Abruf), 10-Min-Cache im Backend.
 watch(
   () => ticket.value?.name,
-  () => {
+  (name) => {
     ldapLoadedFor.value = null;
     ldapInfo.reset?.();
+    if (name && ldapEnabled.data) loadLdapIfNeeded();
+  },
+  { immediate: true }
+);
+watch(
+  () => ldapEnabled.data,
+  (enabled) => {
+    if (enabled && ticket.value?.name) loadLdapIfNeeded();
   }
 );
 const ldapRows = computed(() =>
