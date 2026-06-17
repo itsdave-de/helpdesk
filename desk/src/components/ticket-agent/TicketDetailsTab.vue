@@ -77,7 +77,7 @@
             </template>
             <div class="flex items-center gap-2 pt-1">
               <span class="w-[110px] shrink-0 text-sm text-ink-gray-5">{{ __("Zeiteinheiten") }}</span>
-              <span class="text-sm text-ink-gray-8">{{ ticket.doc?.hda_total_time_units || 0 }}</span>
+              <span class="text-sm text-ink-gray-8">{{ totalTimeUnits }}</span>
             </div>
           </div>
         </Section>
@@ -209,6 +209,15 @@ const ticket = inject(TicketSymbol)!;
 const assignees = inject(AssigneeSymbol)!;
 const customizations = inject(CustomizationSymbol)!;
 const activities = inject(ActivitiesSymbol)!;
+const totalTimeUnits = computed(() => {
+  const data = activities.value?.data || {};
+  const items = [...(data.communications || []), ...(data.comments || [])];
+  const sum = items.reduce(
+    (acc, a) => acc + (Number(a?.hda_time_units) || 0),
+    0
+  );
+  return Math.round(sum * 100) / 100;
+});
 const recentSimilarTickets = inject(RecentSimilarTicketsSymbol)!;
 
 const ldapInfo = createResource({

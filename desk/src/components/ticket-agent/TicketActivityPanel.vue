@@ -21,6 +21,7 @@
         @update="
           () => {
             activities.reload();
+            refreshTicket();
             ticketAgentActivitiesRef?.scrollToLatestActivity();
           }
         "
@@ -74,6 +75,7 @@ import { TicketAgentActivities } from "../ticket";
 
 const ticket = inject(TicketSymbol)!;
 const activities = inject(ActivitiesSymbol)!;
+const refreshTicket = inject<() => void>("refreshTicket", () => {});
 
 const ticketAgentActivitiesRef = ref<InstanceType<
   typeof TicketAgentActivities
