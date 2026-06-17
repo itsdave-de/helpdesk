@@ -189,6 +189,7 @@ def get_communications(ticket: str):
             QBCommunication.delivery_status,
             QBCommunication.sent_or_received,
             QBCommunication.user,
+            QBCommunication.hda_time_units,
         )
         .where(QBCommunication.reference_doctype == "HD Ticket")
         .where(QBCommunication.reference_name == ticket)
@@ -214,6 +215,7 @@ def get_comments(ticket: str):
             QBComment.creation,
             QBComment.is_pinned,
             QBComment.name,
+            QBComment.hda_time_units,
         )
         .where(QBComment.reference_ticket == ticket)
         .orderby(QBComment.creation, order=Order.asc)

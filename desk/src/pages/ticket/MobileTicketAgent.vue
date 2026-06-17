@@ -492,6 +492,7 @@ const _activities = computed(() => {
         attachments: email.attachments,
         name: email.name,
         deliveryStatus: email.delivery_status,
+        hda_time_units: email.hda_time_units,
         isFirstEmail: idx === 0,
       };
     }
@@ -507,6 +508,7 @@ const _activities = computed(() => {
       creation: comment.creation,
       content: comment.content,
       attachments: comment.attachments,
+      hda_time_units: comment.hda_time_units,
     };
   });
 

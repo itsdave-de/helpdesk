@@ -15,6 +15,13 @@
         </p>
       </div>
       <div class="flex items-center gap-1">
+        <span
+          v-if="hda_time_units"
+          class="rounded bg-surface-gray-3 px-1.5 py-0.5 text-xs text-ink-gray-7"
+          title="Erfasste Zeiteinheiten"
+        >
+          ⏱ {{ hda_time_units }}
+        </span>
         <Tooltip :text="dateFormat(creation, dateTooltipFormat)">
           <span class="pl-0.5 text-sm text-ink-gray-5">
             {{ timeAgo(creation) }}
@@ -187,7 +194,7 @@ const props = defineProps({
 const { getUser } = useUserStore();
 const { enableCommentReactions } = useConfigStore();
 
-const { name, creation, content, commenter, commentedBy, attachments } =
+const { name, creation, content, commenter, commentedBy, attachments, hda_time_units } =
   props.activity;
 
 const { isMac } = useDevice();

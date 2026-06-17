@@ -177,6 +177,15 @@
           <TextEditorFixedMenu :buttons="textEditorMenuButtons" />
         </div>
         <div class="flex items-center justify-end space-x-2 sm:mt-0 w-[40%]">
+          <input
+            v-model.number="timeUnits"
+            type="number"
+            min="0"
+            step="0.5"
+            placeholder="Zeit"
+            title="Zeiteinheiten"
+            class="w-16 rounded border border-outline-gray-2 bg-surface-white px-2 py-1 text-sm text-ink-gray-8 placeholder:text-ink-gray-4 focus:ring-0"
+          />
           <Button label="Discard" @click="handleDiscard" />
           <Button
             variant="solid"
@@ -431,6 +440,7 @@ watch(
 );
 
 const attachments = ref([]);
+const timeUnits = ref(null);
 const isUploading = ref(false);
 
 async function removeAttachment(attachment) {
@@ -458,6 +468,7 @@ const sendMail = createResource({
       to: toEmailsClone.value.join(","),
       cc: ccEmailsClone.value?.join(","),
       bcc: bccEmailsClone.value?.join(","),
+      time_units: timeUnits.value,
       message:
         newEmail.value +
         (quotedContentRef.value
@@ -535,6 +546,7 @@ function addToReply(
 function resetState() {
   newEmail.value = emailSignature.value ? emailSignature.value : null;
   attachments.value = [];
+  timeUnits.value = null;
   quotedContent.value = null;
   isQuoteExpanded.value = false;
   focusEditorAtStart();

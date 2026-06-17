@@ -41,6 +41,13 @@
             :theme="status.color"
             class="mr-1.5"
           />
+          <span
+            v-if="hda_time_units"
+            class="mr-1.5 rounded bg-surface-gray-3 px-1.5 py-0.5 text-xs text-ink-gray-7"
+            title="Erfasste Zeiteinheiten"
+          >
+            ⏱ {{ hda_time_units }}
+          </span>
           <Tooltip
             :text="dateFormat(creation, dateTooltipFormat)"
             v-if="!isMobileView"
@@ -148,6 +155,7 @@ const {
   content,
   name,
   deliveryStatus,
+  hda_time_units,
 } = props.activity;
 
 const emit = defineEmits(["reply"]);

@@ -68,6 +68,15 @@
               <TextEditorFixedMenu :buttons="textEditorMenuButtons" />
             </div>
             <div class="flex items-center justify-end space-x-2 w-[40%]">
+              <input
+                v-model.number="timeUnits"
+                type="number"
+                min="0"
+                step="0.5"
+                placeholder="Zeit"
+                title="Zeiteinheiten"
+                class="w-16 rounded border border-outline-gray-2 bg-surface-white px-2 py-1 text-sm text-ink-gray-8 placeholder:text-ink-gray-4 focus:ring-0"
+              />
               <Button
                 label="Discard"
                 @click="
@@ -201,6 +210,7 @@ async function submitComment() {
       args: {
         content: newComment.value,
         attachments: attachments.value,
+        time_units: timeUnits.value,
       },
     }),
     onSuccess: () => {
@@ -211,6 +221,7 @@ async function submitComment() {
       loading.value = false;
       attachments.value = [];
       newComment.value = null;
+      timeUnits.value = null;
     },
     onError: () => {
       loading.value = false;
@@ -221,6 +232,7 @@ async function submitComment() {
 }
 
 const editorRef = ref(null);
+const timeUnits = ref(null);
 const editor = computed(() => editorRef.value?.editor);
 
 onMounted(() => {
