@@ -645,6 +645,13 @@ class HDTicket(Document):
         ):
             return
 
+        # No recipients (e.g. agent reply created during ticket merge): the
+        # communication/note is already recorded above; skip the actual email
+        # send. Without this, frappe.sendmail builds an empty queue (a list) and
+        # `q.send` raises "'list' object has no attribute 'send'".
+        if not recipients:
+            return
+
         if not sender_email:
             frappe.throw(
                 _("Unable to send email. Please setup default outgoing email account.")
@@ -694,11 +701,11 @@ class HDTicket(Document):
                 subject=subject,
                 with_container=False,
                 in_reply_to=(
-                    last_communication.name if last_communication.name else None
+                    last_communication.name if last_communication else None
                 ),
             )
         except Exception as e:
-            frappe.throw(_(e))
+            frappe.throw(_("Could not send the reply email: {0}").format(str(e)))
 
     @frappe.whitelist()
     # flake8: noqa
