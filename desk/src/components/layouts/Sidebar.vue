@@ -640,6 +640,8 @@ const currentStep = ref({});
 
 const { isOnboardingStepsCompleted, setUp, updateOnboardingStep } =
   useOnboarding("helpdesk");
+// SSC: Onboarding/"Getting Started"-Guide global deaktiviert (alle User)
+isOnboardingStepsCompleted.value = true;
 
 async function handleFirstTicketNavigation() {
   const ticket = await getFirstTicket();
