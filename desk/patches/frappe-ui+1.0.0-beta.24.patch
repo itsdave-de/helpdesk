@@ -18,6 +18,23 @@ index 0b7069a..de2a3df 100644
            pluginKey: new PluginKey(options.name),
            items: ({ query }: { query: string }) =>
              typeof options.items === 'function' ? options.items(query) : options.items,
+diff --git a/node_modules/frappe-ui/src/molecules/editor/components/MediaNodeView.vue b/node_modules/frappe-ui/src/molecules/editor/components/MediaNodeView.vue
+index 66882ab..2825a12 100644
+--- a/node_modules/frappe-ui/src/molecules/editor/components/MediaNodeView.vue
++++ b/node_modules/frappe-ui/src/molecules/editor/components/MediaNodeView.vue
+@@ -215,7 +215,11 @@ function setVideoOptions(options: {
+ </script>
+ 
+ <template>
+-  <NodeViewWrapper as="div" :class="wrapperClasses(node.attrs.float)">
++  <NodeViewWrapper
++    as="div"
++    data-drag-handle
++    :class="wrapperClasses(node.attrs.float)"
++  >
+     <div
+       ref="containerRef"
+       class="group relative isolate overflow-hidden not-prose rounded"
 diff --git a/node_modules/frappe-ui/src/molecules/editor/extensions/shared/suggestion-renderer.ts b/node_modules/frappe-ui/src/molecules/editor/extensions/shared/suggestion-renderer.ts
 index 8363502..07f4551 100644
 --- a/node_modules/frappe-ui/src/molecules/editor/extensions/shared/suggestion-renderer.ts
