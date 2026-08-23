@@ -121,9 +121,7 @@
               :label="__('Submit')"
               theme="gray"
               variant="solid"
-              :disabled="
-                $refs.editor?.editor?.isEmpty || ticket.loading || !subject
-              "
+              :disabled="ticket.loading || !subject"
               @click="() => ticket.submit()"
             />
           </template>
@@ -263,7 +261,8 @@ const ticket = createResource({
   }),
   validate: (params) => {
     const fields = visibleFields.value?.filter((f) => f.required) || [];
-    const toVerify = [...fields, "subject", "description"];
+    const toVerify = [...fields, "subject"];
+    if (isCustomerPortal.value) toVerify.push("description");
     for (const field of toVerify) {
       if (!params.doc[field.fieldname || field]) {
         return `${field.label || field} is required`;
