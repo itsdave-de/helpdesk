@@ -6768,3 +6768,15 @@ msgstr "{0} · Zuletzt aktiv {1}"
 #: helpdesk/helpdesk/doctype/hd_ticket_comment/hd_ticket_comment.py:156
 msgid "{} people reacted to your comment"
 msgstr "{} Personen haben auf Ihren Kommentar reagiert"
+
+msgid "All tickets"
+msgstr "Alle Tickets"
+
+msgid "No recent tickets"
+msgstr "Keine Tickets in letzter Zeit"
+
+msgid "Recent tickets for {0}"
+msgstr "Letzte Tickets von {0}"
+
+msgid "Recent tickets for this contact"
+msgstr "Letzte Tickets dieses Kontakts"
