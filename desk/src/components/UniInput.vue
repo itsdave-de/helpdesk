@@ -98,6 +98,7 @@ const component = computed(() => {
       doctype: props.field.options,
       filters: props.field.filters,
       title: props.value ? String(props.value) : undefined,
+      showDescription: true,
     });
   } else if (props.field.fieldtype === "Select") {
     return optionControl(
