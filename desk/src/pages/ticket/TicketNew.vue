@@ -205,7 +205,7 @@ const { isUploading, track } = useUploadTracker();
 const canSubmit = computed(
   () =>
     Boolean(subject.value) &&
-    !isContentEmpty(description.value) &&
+    (!isCustomerPortal.value || !isContentEmpty(description.value)) &&
     !ticket.loading &&
     !isUploading.value
 );
@@ -292,7 +292,8 @@ const ticket = createResource({
   }),
   validate: (params) => {
     const fields = visibleFields.value?.filter((f) => f.required) || [];
-    const toVerify = [...fields, "subject", "description"];
+    const toVerify = [...fields, "subject"];
+    if (isCustomerPortal.value) toVerify.push("description");
     for (const field of toVerify) {
       if (!params.doc[field.fieldname || field]) {
         return `${field.label || field} is required`;
