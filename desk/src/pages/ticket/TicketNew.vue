@@ -53,6 +53,11 @@
           </template>
         </UniInput>
       </div>
+      <!-- recent tickets of the selected contact (agent portal) -->
+      <ContactRecentTickets
+        v-if="!isCustomerPortal && templateFields.contact"
+        :contact="templateFields.contact"
+      />
       <!-- existing fields -->
       <div
         class="flex flex-col"
@@ -161,6 +166,7 @@ import sanitizeHtml from "sanitize-html";
 import { computed, defineAsyncComponent, onMounted, reactive, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import SearchArticles from "../../components/SearchArticles.vue";
+import ContactRecentTickets from "../../components/ticket-agent/ContactRecentTickets.vue";
 
 const TicketTextEditor = defineAsyncComponent(
   () => import("./TicketTextEditor.vue")
