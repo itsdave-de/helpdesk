@@ -11,13 +11,26 @@
         />
         <Button
           v-if="ticket.data.status !== 'Closed'"
-          :label="__('Close')"
+          :label="__('Close Ticket')"
           theme="gray"
           variant="solid"
           @click="handleClose()"
         >
           <template #prefix>
             <LucideCheck class="size-4" />
+          </template>
+        </Button>
+        <!-- SSC: Kunden duerfen geschlossene Tickets wieder oeffnen (helpdesk_addon) -->
+        <Button
+          v-if="reopenState.data?.allowed"
+          :label="__('Reopen Ticket')"
+          theme="gray"
+          variant="solid"
+          :loading="reopen.loading"
+          @click="handleReopen()"
+        >
+          <template #prefix>
+            <LucideRotateCcw class="size-4" />
           </template>
         </Button>
       </template>
@@ -125,6 +138,27 @@ const props = defineProps<P>();
 
 const { getStatus } = useTicketStatusStore();
 
+// SSC: Reopen-Berechtigung kommt vom Addon (HDA Settings: allow_customer_reopen,
+// customer_reopen_max_days), damit Button und Server-Pruefung dieselbe Quelle haben.
+const reopenState = createResource({
+  url: "helpdesk_addon.api.customer_reopen.get_reopen_state",
+  params: { ticket: props.ticketId },
+  auto: true,
+});
+
+const reopen = createResource({
+  url: "helpdesk_addon.api.customer_reopen.reopen_ticket",
+  makeParams: () => ({ ticket: props.ticketId }),
+  onSuccess: () => {
+    toast.success(__("Ticket reopened successfully."));
+    ticket.reload();
+  },
+  onError: (e) => {
+    toast.error(e?.messages?.[0] || __("Ticket could not be reopened."));
+    reopenState.reload();
+  },
+});
+
 const ticket = createResource({
   url: "helpdesk.helpdesk.doctype.hd_ticket.api.get_one",
   cache: ["Ticket", props.ticketId],
@@ -135,6 +169,7 @@ const ticket = createResource({
   auto: true,
   onSuccess: (data) => {
     data.status = getStatus(data.status)?.label_customer;
+    reopenState.reload();
     setupCustomizations(ticket, {
       doc: data,
       call,
@@ -305,6 +340,23 @@ function showConfirmationDialog() {
               },
             }
           );
+          close();
+        },
+      },
+    ],
+  });
+}
+
+function handleReopen() {
+  $dialog({
+    title: __("Reopen Ticket"),
+    message: __("Are you sure you want to reopen this ticket?"),
+    actions: [
+      {
+        label: __("Confirm"),
+        variant: "solid",
+        onClick(close: Function) {
+          reopen.submit();
           close();
         },
       },

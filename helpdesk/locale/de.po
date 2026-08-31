@@ -447,7 +447,7 @@ msgstr ""
 
 #: desk/src/pages/ticket/TicketCustomer.vue:293
 msgid "Are you sure you want to close this ticket?"
-msgstr ""
+msgstr "Möchten Sie dieses Ticket wirklich schließen?"
 
 #: desk/src/pages/knowledge-base/KnowledgeBaseAgent.vue:201
 msgid "Are you sure you want to delete these articles?"
@@ -1082,7 +1082,7 @@ msgstr "Schließen"
 
 #: desk/src/pages/ticket/TicketCustomer.vue:292
 msgid "Close Ticket"
-msgstr ""
+msgstr "Ticket schließen"
 
 #. Option in a Select field in the tickets Web Form
 #: helpdesk/helpdesk/web_form/tickets/tickets.json
@@ -5259,7 +5259,7 @@ msgstr ""
 
 #: desk/src/pages/ticket/TicketCustomer.vue:304
 msgid "Ticket closed successfully."
-msgstr ""
+msgstr "Das Ticket wurde geschlossen."
 
 #: desk/src/components/ticket-agent/TicketHeader.vue:219
 msgid "Ticket deleted successfully."
@@ -5945,3 +5945,19 @@ msgstr ""
 msgid "{0} view is currently visible in the sidebar. Hiding it will remove it from the sidebar."
 msgstr ""
 
+# SSC (helpdesk_addon, Kunden-Reopen im Portal) - nach Upstream-Rebase pruefen
+#: desk/src/pages/ticket/TicketCustomer.vue
+msgid "Reopen Ticket"
+msgstr "Ticket wieder öffnen"
+
+#: desk/src/pages/ticket/TicketCustomer.vue
+msgid "Are you sure you want to reopen this ticket?"
+msgstr "Möchten Sie dieses Ticket wirklich wieder öffnen?"
+
+#: desk/src/pages/ticket/TicketCustomer.vue
+msgid "Ticket reopened successfully."
+msgstr "Das Ticket wurde wieder geöffnet."
+
+#: desk/src/pages/ticket/TicketCustomer.vue
+msgid "Ticket could not be reopened."
+msgstr "Das Ticket konnte nicht wieder geöffnet werden."
