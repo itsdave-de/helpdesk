@@ -113,6 +113,8 @@ def get_communications(ticket: str):
         c.user = get_user_info_for_avatar(user_id)
         if customer:
             c.content = strip_email_file_ids(c.content)
+            # the email itself shows To and Cc to its recipients, never Bcc
+            c.pop("bcc", None)
     return communications
 
 
