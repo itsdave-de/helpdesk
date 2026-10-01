@@ -13,6 +13,7 @@ from helpdesk.api.doc import handle_at_me_support
 from helpdesk.extends.file import strip_email_file_ids
 from helpdesk.helpdesk.doctype.hd_form_script.hd_form_script import get_form_script
 from helpdesk.helpdesk.doctype.hd_settings.helpers import get_rendered_banner_msg
+from helpdesk.helpdesk.doctype.hd_ticket.hd_ticket import _is_customer_manager
 from helpdesk.ticket_fields import TicketFields
 from helpdesk.utils import agent_only, is_agent, parse_call_logs
 
@@ -106,7 +107,7 @@ def get_communications(ticket: str):
         .orderby(QBCommunication.creation, order=Order.asc)
         .run(as_dict=True)
     )
-    customer = not is_agent()
+    customer = reads_as_customer(ticket)
     emails = [c.name for c in communications]
     for c in communications:
         c.attachments = get_attachments("Communication", c.name)
@@ -117,6 +118,20 @@ def get_communications(ticket: str):
             # the email itself shows To and Cc to its recipients, never Bcc
             c.pop("bcc", None)
     return communications
+
+
+def reads_as_customer(ticket: str) -> bool:
+    """Whether the caller reads the ticket as its customer, which an agent can be
+    too: requester and customer access come before the agent check."""
+    user = frappe.session.user
+    if not is_agent(user):
+        return True
+    doc = frappe.db.get_value(
+        "HD Ticket", ticket, ["raised_by", "contact", "customer"], as_dict=True
+    )
+    return user in (doc.raised_by, doc.contact) or _is_customer_manager(
+        doc.customer, user
+    )
 
 
 def get_call_logs(ticket: str):
