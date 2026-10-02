@@ -35,7 +35,7 @@
               :id="item.id"
               :label="__(item.label)"
               :active="item.isActive"
-              :to="item.to"
+              :route="item.route"
               :class="item.spacedTop && 'mt-4'"
               @click="item.onClick && item.onClick()"
             >
@@ -190,9 +190,8 @@ function currentRouteKey(): string | null {
   return (route.query.view as string) || (route.name as string) || null;
 }
 
-// Items that carry a `to` are rendered as real links by SidebarItem, so the
-// router handles navigation. This only keeps the side effects: highlight the
-// item immediately (before the route settles) and let callers hook in.
+// Items with a `route` render as router links, so this only highlights the
+// item before the route settles and runs the caller's hook.
 function selectItem(key: string, onSelect?: () => void) {
   activeItem.value = key;
   onSelect?.();
@@ -208,7 +207,7 @@ const navItems = computed(() => {
       label: option.label,
       icon: option.icon,
       isActive: activeItem.value === option.to,
-      to: { name: option.to },
+      route: { name: option.to },
       onClick: () => selectItem(option.to),
       // Separate the nav group from the search/notification tools above it.
       spacedTop: index === 0 && !isCustomerPortal.value,
@@ -232,7 +231,7 @@ const notificationItem = computed(() =>
         label: __("Notifications"),
         icon: LucideBell,
         isActive: activeItem.value === "Notifications",
-        to: { name: "Notifications" },
+        route: { name: "Notifications" },
         onClick: () => selectItem("Notifications"),
         badge: notificationStore.unread,
         key: "notifications",
@@ -280,7 +279,7 @@ function parseViews(views: any[]) {
     label: view.label,
     icon: getIcon(view.icon),
     isActive: activeItem.value === view.name,
-    to: { name: view.route_name, query: { view: view.name } },
+    route: { name: view.route_name, query: { view: view.name } },
     onClick: () =>
       selectItem(view.name, () => {
         currentView.value = { label: view.label, icon: view.icon };
