@@ -108,15 +108,15 @@ def get_communications(ticket: str):
         .run(as_dict=True)
     )
     customer = reads_as_customer(ticket)
-    emails = [c.name for c in communications]
     for c in communications:
         c.attachments = get_attachments("Communication", c.name)
         user_id = c.user if c.sent_or_received == "Sent" and c.user else c.sender
         c.user = get_user_info_for_avatar(user_id)
         if customer:
-            c.content = strip_email_file_ids(c.content, emails)
             # the email itself shows To and Cc to its recipients, never Bcc
             c.pop("bcc", None)
+    if customer:
+        strip_email_file_ids(communications)
     return communications
 
 
